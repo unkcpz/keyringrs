@@ -1,0 +1,20 @@
+[build-system]
+requires = ["maturin>=1.8,<2.0"]
+build-backend = "maturin"
+
+[project]
+name = "keyringrs"
+requires-python = ">=3.9"
+classifiers = [
+    "Programming Language :: Rust",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Python :: Implementation :: PyPy",
+]
+dynamic = ["version"]
+[tool.maturin]
+module-name = "keyringrs._keyringrs"
+features = ["pyo3/extension-module"]
+
+[tool.uv]
+dev-dependencies = ["pip", "pytest>=8.0.2", "ruff>=0.8.0", "pre-commit>=4.0.1"]
+
