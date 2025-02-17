@@ -2,7 +2,7 @@ import pytest
 from keyringrs import Entry
 
 
-def test_entry():
+def test_entry_init():
     entry = Entry("my-service", "my-name")
 
     # Set a password

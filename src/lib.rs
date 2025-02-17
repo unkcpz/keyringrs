@@ -21,6 +21,8 @@ impl PyEntry {
     /// This mirrors `Entry::new(service, user)`.
     #[new]
     pub fn new(service: &str, user: &str) -> PyResult<Self> {
+        // TODO: should this tailor to accept credential to force to using keyutil even dbus is
+        // there?
         let entry = Entry::new(service, user).map_err(to_py_err)?;
         Ok(PyEntry { inner: entry })
     }
