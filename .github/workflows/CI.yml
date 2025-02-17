@@ -21,7 +21,7 @@ permissions:
 jobs:
   pytest-linux:
     # test keyutil works when no dbus in the system.
-    name: python${{ matrix.python-version }}-${{ matrix.os }}
+    name: bare-keyutil-${{ matrix.python-version }}-${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -63,7 +63,7 @@ jobs:
         shell: bash
 
   pytest:
-    name: python${{ matrix.python-version }}-${{ matrix.os }}
+    name: cross-platform-py${{ matrix.python-version }}-${{ matrix.os }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -119,7 +119,7 @@ jobs:
           uv run ruff format --check
       - name: Test Python
         run: |
-          uv run pytest tests/
+          uv run pytest --ignore=tests/test_keyutil.py tests/
         shell: bash
 
   linux:
