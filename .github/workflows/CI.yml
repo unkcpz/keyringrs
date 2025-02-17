@@ -43,6 +43,17 @@ jobs:
         if: ${{ matrix.os == 'ubuntu-latest' || matrix.os == 'macos-latest' }}
         run: curl -LsSf https://astral.sh/uv/install.sh | sh
       - name: Set up uv
+        # As did in keyring-rs.
+        # run gnome-keyring with 'foobar' as password for the login keyring
+        # this will create a new login keyring and unlock it
+        # the login password doesn't matter, but the keyring must be unlocked for the tests to work
+        if: ${{ matrix.os == 'ubuntu-latest' }}
+        run: |
+          sudo apt update -y
+          sudo apt install -y libdbus-1-dev libssl-dev gnome-keyring
+          gnome-keyring-daemon --components=secrets --daemonize --unlock <<< 'foobar'
+
+      - name: Set up uv
         if: ${{ matrix.os == 'windows-latest' }}
         run: irm https://astral.sh/uv/install.ps1 | iex
         shell: powershell
