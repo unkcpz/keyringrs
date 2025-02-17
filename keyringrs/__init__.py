@@ -1,5 +1,5 @@
-from .keyringrs import *
+from .keyringrs import *  # noqa: F403
 
 __all__ = (
-    "Entry",
+    "Entry",  # noqa: F405
 )
