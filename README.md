@@ -9,6 +9,13 @@ While [keyring](https://github.com/jaraco/keyring) is a great tool, it doesn't f
 
 This library aims to maintain API compatibility with `keyring-rs` as closely as possible.
 
+It therefore provide built-in support following platform-specific credential stores inherited from keyring-rs:
+
+* _Linux_: The DBus-based Secret Service, the kernel keyutils, and a combo of the two.
+* _FreeBSD_, _OpenBSD_: The DBus-based Secret Service.
+* _macOS_, _iOS_: The local keychain.
+* _Windows_: The Windows Credential Manager.
+
 ## Installation
 
 To install the package, simply run:
