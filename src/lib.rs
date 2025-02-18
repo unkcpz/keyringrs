@@ -2,29 +2,60 @@ use pyo3::exceptions::PyRuntimeError;
 use pyo3::prelude::*;
 
 // Replace these imports with the actual path to your crate that defines them.
-use keyring::{Entry, Error};
+use keyring::{keyutils, Entry, Error};
 
 /// Convert crate's `Error` to a Python `PyErr`.
 fn to_py_err(err: Error) -> PyErr {
     PyRuntimeError::new_err(err.to_string())
 }
 
+#[pyclass(eq, eq_int)]
+#[derive(Debug, Clone, Copy, PartialEq)]
+pub(crate) enum CredentialType {
+    Default = 0,
+    KeyUtil = 1,
+}
+
 #[pyclass(name = "Entry")]
 #[derive(Debug)]
-struct PyEntry {
+pub(crate) struct PyEntry {
     inner: Entry,
+    credential_type: CredentialType,
 }
 
 #[pymethods]
 impl PyEntry {
-
-    /// This mirrors `Entry::new(service, user)`.
     #[new]
-    pub fn new(service: &str, user: &str) -> PyResult<Self> {
-        // TODO: should this tailor to accept credential to force to using keyutil even dbus is
-        // there?
-        let entry = Entry::new(service, user).map_err(to_py_err)?;
-        Ok(PyEntry { inner: entry })
+    #[pyo3(signature=(service, user, target = None, credential_type = CredentialType::Default))]
+    pub fn new(
+        _py: Python,
+        service: &str,
+        user: &str,
+        target: Option<&str>,
+        credential_type: CredentialType,
+    ) -> PyResult<Self> {
+        match credential_type {
+            CredentialType::Default => {
+                let entry = if let Some(target) = target {
+                    Entry::new_with_target(target, service, user).map_err(to_py_err)?
+                } else {
+                    Entry::new(service, user).map_err(to_py_err)?
+                };
+                Ok(PyEntry {
+                    inner: entry,
+                    credential_type,
+                })
+            }
+            CredentialType::KeyUtil => {
+                let builder = keyutils::default_credential_builder();
+                let credential = builder.build(target, service, user).map_err(to_py_err)?;
+                let entry = Entry::new_with_credential(credential);
+                Ok(PyEntry {
+                    inner: entry,
+                    credential_type,
+                })
+            }
+        }
     }
 
     /// `Entry::set_password(&self, password)`
@@ -42,7 +73,7 @@ impl PyEntry {
         self.inner.delete_credential().map_err(to_py_err)
     }
 
-    /// For a nice display of Entry object
+    /// For a nice display of Entry and credential type object
     fn __str__(&self) -> String {
         format!("{:?}", self.inner)
     }
@@ -52,5 +83,6 @@ impl PyEntry {
 #[pymodule]
 fn keyringrs(_py: Python, m: &Bound<'_, PyModule>) -> PyResult<()> {
     m.add_class::<PyEntry>()?;
+    m.add_class::<CredentialType>()?;
     Ok(())
 }

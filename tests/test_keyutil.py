@@ -1,5 +1,5 @@
 import pytest
-from keyringrs import Entry
+from keyringrs import Entry, CredentialType
 
 
 def test_entry():
@@ -14,7 +14,7 @@ def test_entry():
 
 
 def test_entry_keyutil():
-    entry = Entry("my-service", "my-name", credential=Credential.KeyUtil)
+    entry = Entry("my-service", "my-name", credential_type=CredentialType.KeyUtil)
 
     # Set a password
     pass_str = "0Xl$$K6o2bBwDe"
