@@ -1,3 +1,5 @@
+"""Test only run on linux without dbus setup to test the keyutil can be set as the credential method"""
+
 import pytest
 from keyringrs import Entry, CredentialType
 

@@ -1,8 +1,10 @@
 use pyo3::exceptions::PyRuntimeError;
 use pyo3::prelude::*;
 
-// Replace these imports with the actual path to your crate that defines them.
-use keyring::{keyutils, Entry, Error};
+use keyring::{Entry, Error};
+
+#[cfg(target_os = "linux")]
+use keyring::keyutils;
 
 /// Convert crate's `Error` to a Python `PyErr`.
 fn to_py_err(err: Error) -> PyErr {
@@ -13,6 +15,8 @@ fn to_py_err(err: Error) -> PyErr {
 #[derive(Debug, Clone, Copy, PartialEq)]
 pub(crate) enum CredentialType {
     Default = 0,
+
+    #[cfg(target_os = "linux")]
     KeyUtil = 1,
 }
 
@@ -20,7 +24,6 @@ pub(crate) enum CredentialType {
 #[derive(Debug)]
 pub(crate) struct PyEntry {
     inner: Entry,
-    credential_type: CredentialType,
 }
 
 #[pymethods]
@@ -43,16 +46,15 @@ impl PyEntry {
                 };
                 Ok(PyEntry {
                     inner: entry,
-                    credential_type,
                 })
             }
+            #[cfg(target_os = "linux")]
             CredentialType::KeyUtil => {
                 let builder = keyutils::default_credential_builder();
                 let credential = builder.build(target, service, user).map_err(to_py_err)?;
                 let entry = Entry::new_with_credential(credential);
                 Ok(PyEntry {
                     inner: entry,
-                    credential_type,
                 })
             }
         }
@@ -73,7 +75,7 @@ impl PyEntry {
         self.inner.delete_credential().map_err(to_py_err)
     }
 
-    /// For a nice display of Entry and credential type object
+    /// For a nice display of Entry
     fn __str__(&self) -> String {
         format!("{:?}", self.inner)
     }
