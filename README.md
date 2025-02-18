@@ -83,10 +83,6 @@ The repo organized using [mixed rust/python layout](https://www.maturin.rs/proje
 
 ### Ack
 
-There was effort https://github.com/dk26/pyrust-keyring five years ago.
-Over the year the `keyring-rs` get more features and rubost and slightly diverge from `keyring` so good to have a proper wrapper on it.
-Plus the `pyo3` is much more friendly to wrapper things and distribute the library on pypi.
-
 There was an effort five years ago with [pyrust-keyring](https://github.com/dk26/pyrust-keyring). 
 However, over the years, `keyring-rs` has gained more features, become more robust, and slightly diverged from the original `keyring` library. 
 It would be beneficial to have a proper wrapper for it. 
