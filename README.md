@@ -57,7 +57,7 @@ For the fallback support to use only `keyutils`, the key stored will disappear a
 from keyringrs import Entry, CredentialType
 
 # Create an entry use only keyutils in linux
-entry = Entry("my-service", "my-name", credential_type=CredentialType.KeyUtil)
+entry = Entry("my-service", "my-name", credential_type=CredentialType.KeyUtils)
 ```
 
 This interface follows the same logic as `keyring-rs` to ensure consistency and ease of use.

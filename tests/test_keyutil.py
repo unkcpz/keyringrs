@@ -10,13 +10,13 @@ def test_entry():
     # Set a password
     pass_str = "0Xl$$K6o2bBwDe"
 
-    # The default linux credential is KeyUtil persistence, which require properly set up dbus
+    # The default linux credential is KeyUtils persistence, which require properly set up dbus
     with pytest.raises(Exception):
         entry.set_password(pass_str)
 
 
 def test_entry_keyutil():
-    entry = Entry("my-service", "my-name", credential_type=CredentialType.KeyUtil)
+    entry = Entry("my-service", "my-name", credential_type=CredentialType.KeyUtils)
 
     # Set a password
     pass_str = "0Xl$$K6o2bBwDe"

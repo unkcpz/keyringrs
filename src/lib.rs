@@ -17,7 +17,7 @@ pub(crate) enum CredentialType {
     Default = 0,
 
     #[cfg(target_os = "linux")]
-    KeyUtil = 1,
+    KeyUtils = 1,
 }
 
 #[pyclass(name = "Entry")]
@@ -49,7 +49,7 @@ impl PyEntry {
                 })
             }
             #[cfg(target_os = "linux")]
-            CredentialType::KeyUtil => {
+            CredentialType::KeyUtils => {
                 let builder = keyutils::default_credential_builder();
                 let credential = builder.build(target, service, user).map_err(to_py_err)?;
                 let entry = Entry::new_with_credential(credential);
