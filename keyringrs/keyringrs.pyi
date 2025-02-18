@@ -9,9 +9,9 @@ class CredentialType(Enum):
     :cvar Default: Default credential handling
     :cvar KeyUtils: Credential handling using key utilities
     """
+
     Default = auto()
     KeyUtils = auto()
-
 
 class Entry:
     """
@@ -32,13 +32,13 @@ class Entry:
 
         :param service:
             The name of the service or system this credential is associated with.
-        
+
         :param user:
             The username or identifier for which credentials are stored.
-        
+
         :param target:
             An optional target or sub-identifier (e.g., a specific account or region).
-        
+
         :param credential_type:
             The type of the credential, as defined in :class:`CredentialType`.
             Defaults to :attr:`CredentialType.Default`.
@@ -72,4 +72,3 @@ class Entry:
         it can no longer be retrieved.
         """
         ...
-
