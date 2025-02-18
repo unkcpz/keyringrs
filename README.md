@@ -9,6 +9,13 @@ While [keyring](https://github.com/jaraco/keyring) is a great tool, it doesn't f
 
 This library aims to maintain API compatibility with `keyring-rs` as closely as possible.
 
+It therefore provide built-in support following platform-specific credential stores inherited from keyring-rs:
+
+* _Linux_: The DBus-based Secret Service, the kernel keyutils, and a combo of the two (see below for example on how to control to use only `keyutils`).
+* _FreeBSD_, _OpenBSD_: The DBus-based Secret Service.
+* _macOS_, _iOS_: The local keychain.
+* _Windows_: The Windows Credential Manager.
+
 ## Installation
 
 To install the package, simply run:
@@ -36,6 +43,16 @@ print(f"My password is '{password}'")
 
 # Delete the credential
 entry.delete_credential()
+```
+
+In linux, by default it assume it used in a desktop distro with `libdbus` installed.
+For the fallback support to use only `keyutils`, the key stored will disappear after reboot.
+
+```python
+from keyringrs import Entry, CredentialType
+
+# Create an entry use only keyutils in linux
+entry = Entry("my-service", "my-name", credential_type=CredentialType.KeyUtil)
 ```
 
 This interface follows the same logic as `keyring-rs` to ensure consistency and ease of use.
