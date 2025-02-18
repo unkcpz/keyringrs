@@ -7,8 +7,13 @@ While [keyring](https://github.com/jaraco/keyring) is a great tool, it doesn't f
 - **Native Linux Keyutils Support**: We need seamless integration with keyutils on Linux.  
 - **Proper Memory Management on macOS**: We perform numerous key queries, and [keyring](https://github.com/jaraco/keyring) has known memory management issues on macOS (see [issue jaraco/keyring #670](https://github.com/jaraco/keyring/issues/670)).
 
-This library aims to maintain API compatibility with `keyring-rs` as closely as possible.
+The `keyringrs` is **not** plan as the alternative of [keyring](https://github.com/jaraco/keyring).
+For CLI tool and more generic use cases I recommend to go to `keyring`.
 
+Aside from our specific requirements with macOS and Linux keyutils, this library can serve as a backup solution if there are unresolved issues. 
+While it doesn't guarantee a fix for the problems encountered, it can be a helpful tool to distinguish whether the issue stems from the library itself or from system configuration.
+
+This library aims to maintain API compatibility with `keyring-rs` as closely as possible.
 It therefore provide built-in support following platform-specific credential stores inherited from keyring-rs:
 
 * _Linux_: The DBus-based Secret Service, the kernel keyutils, and a combo of the two (see below for example on how to control to use only `keyutils`).
@@ -75,3 +80,15 @@ The repo organized using [mixed rust/python layout](https://www.maturin.rs/proje
 │   └── test_base.py
 └── uv.lock
 ```
+
+### Ack
+
+There was effort https://github.com/dk26/pyrust-keyring five years ago.
+Over the year the `keyring-rs` get more features and rubost and slightly diverge from `keyring` so good to have a proper wrapper on it.
+Plus the `pyo3` is much more friendly to wrapper things and distribute the library on pypi.
+
+There was an effort five years ago with [pyrust-keyring](https://github.com/dk26/pyrust-keyring). 
+However, over the years, `keyring-rs` has gained more features, become more robust, and slightly diverged from the original `keyring` library. 
+It would be beneficial to have a proper wrapper for it. 
+
+Additionally, `pyo3` has significantly improved, making it much easier to create wrappers and distribute the library on PyPI.
