@@ -31,13 +31,23 @@ pip install keyringrs
 
 ## Usage
 
-Here's a quick example of how to use `keyringrs`:
+Here's a quick example of how to use `keyringrs`.
+For all platforms `service-name` and `key-name` are required fields to create a key entry to distinguish from other keys.
+The `target` field is optional and depends on target platforms, please check docs from `keyring-rs` for particular cases:
+
+- [keyutils](https://docs.rs/keyring/latest/keyring/keyutils/index.html) 
+- [keyutils_persistent](https://docs.rs/keyring/latest/keyring/keyutils_persistent/index.html)
+- [Linux Secret Service](https://docs.rs/keyring/latest/keyring/secret_service/index.html)
+- [iOS](https://docs.rs/keyring/latest/aarch64-apple-ios/keyring/ios/index.html)
+- [macOS](https://docs.rs/keyring/latest/aarch64-apple-darwin/keyring/macos/index.html)
+- [Windows](https://docs.rs/keyring/latest/x86_64-pc-windows-msvc/keyring/windows/index.html)
 
 ```python
 from keyringrs import Entry
 
 # Create an entry for the given service and username
-entry = Entry("my-service", "my-name")
+# Or `entry = Entry("my-service-name", "my-key-name", target="my-target-name")`
+entry = Entry("my-service-name", "my-key-name")
 
 # Set a password
 entry.set_password("0Xl$$K6o2bBwDe")
@@ -57,10 +67,14 @@ For the fallback support to use only `keyutils`, the key stored will disappear a
 from keyringrs import Entry, CredentialType
 
 # Create an entry use only keyutils in linux
-entry = Entry("my-service", "my-name", credential_type=CredentialType.KeyUtils)
+entry = Entry("my-service-name", "my-key-name", credential_type=CredentialType.KeyUtils)
 ```
 
 This interface follows the same logic as `keyring-rs` to ensure consistency and ease of use.
+
+### Checking keys on different platforms
+
+
 
 ## tree layout
 
