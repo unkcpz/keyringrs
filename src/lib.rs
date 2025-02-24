@@ -1,4 +1,4 @@
-use pyo3::exceptions::PyRuntimeError;
+use pyo3::exceptions::{PyKeyError, PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
 
 use keyring::{Entry, Error};
@@ -8,7 +8,22 @@ use keyring::keyutils;
 
 /// Convert crate's `Error` to a Python `PyErr`.
 fn to_py_err(err: Error) -> PyErr {
-    PyRuntimeError::new_err(err.to_string())
+    match err {
+        Error::PlatformFailure(e) => PyRuntimeError::new_err(format!("Platform failure: {e}")),
+        Error::NoStorageAccess(e) => PyRuntimeError::new_err(format!("No storage access: {e}")),
+        Error::NoEntry => PyKeyError::new_err("No entry found in secure storage"),
+        Error::BadEncoding(bytes) => {
+            PyValueError::new_err(format!("Bad encoding encountered: {bytes:?}"))
+        }
+        Error::TooLong(field, limit) => PyValueError::new_err(format!(
+            "Attribute '{field}' is too long; maximum allowed length is {limit}",
+        )),
+        Error::Invalid(field, reason) => {
+            PyValueError::new_err(format!("Invalid attribute '{field}': {reason}"))
+        }
+        Error::Ambiguous(_) => PyValueError::new_err("Ambiguous credentials found"),
+        _ => PyRuntimeError::new_err(err.to_string()),
+    }
 }
 
 #[pyclass(eq, eq_int)]
@@ -44,18 +59,14 @@ impl PyEntry {
                 } else {
                     Entry::new(service, user).map_err(to_py_err)?
                 };
-                Ok(PyEntry {
-                    inner: entry,
-                })
+                Ok(PyEntry { inner: entry })
             }
             #[cfg(target_os = "linux")]
             CredentialType::KeyUtils => {
                 let builder = keyutils::default_credential_builder();
                 let credential = builder.build(target, service, user).map_err(to_py_err)?;
                 let entry = Entry::new_with_credential(credential);
-                Ok(PyEntry {
-                    inner: entry,
-                })
+                Ok(PyEntry { inner: entry })
             }
         }
     }
