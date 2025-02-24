@@ -1,4 +1,4 @@
-use pyo3::exceptions::{PyKeyError, PyRuntimeError, PyValueError};
+use pyo3::exceptions::{PyKeyError, PyOSError, PyRuntimeError, PyValueError};
 use pyo3::prelude::*;
 
 use keyring::{Entry, Error};
@@ -9,8 +9,8 @@ use keyring::keyutils;
 /// Convert crate's `Error` to a Python `PyErr`.
 fn to_py_err(err: Error) -> PyErr {
     match err {
-        Error::PlatformFailure(e) => PyRuntimeError::new_err(format!("Platform failure: {e}")),
-        Error::NoStorageAccess(e) => PyRuntimeError::new_err(format!("No storage access: {e}")),
+        Error::PlatformFailure(e) => PyOSError::new_err(format!("Platform failure: {e}")),
+        Error::NoStorageAccess(e) => PyOSError::new_err(format!("No storage access: {e}")),
         Error::NoEntry => PyKeyError::new_err("No entry found in secure storage"),
         Error::BadEncoding(bytes) => {
             PyValueError::new_err(format!("Bad encoding encountered: {bytes:?}"))
