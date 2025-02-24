@@ -11,6 +11,10 @@ def test_entry():
     pass_str = "0Xl$$K6o2bBwDe"
 
     # The default linux credential is KeyUtils persistence, which require properly set up dbus
+    try:
+        entry.set_password(pass_str)
+    except:
+        raise
     with pytest.raises(Exception):
         entry.set_password(pass_str)
 
@@ -28,5 +32,5 @@ def test_entry_keyutil():
     # Delete the credential
     entry.delete_credential()
 
-    with pytest.raises(Exception):
+    with pytest.raises(KeyError):
         entry.get_password()

@@ -15,5 +15,5 @@ def test_entry():
     # Delete the credential
     entry.delete_credential()
 
-    with pytest.raises(Exception):
+    with pytest.raises(KeyError):
         _ = entry.get_password()
