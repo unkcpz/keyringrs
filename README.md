@@ -6,6 +6,7 @@ While [keyring](https://github.com/jaraco/keyring) is a great tool, it doesn't f
 
 - **Native Linux Keyutils Support**: We need seamless integration with keyutils on Linux.  
 - **Proper Memory Management on macOS**: We perform numerous key queries, and [keyring](https://github.com/jaraco/keyring) has known memory management issues on macOS (see [issue jaraco/keyring #670](https://github.com/jaraco/keyring/issues/670)).
+- **Headless Linux without dbus-x11**: In CI, we test the secret-service on a headless linux (GitHub CI), the workaround starts the Gnome keyring unlocked with a known password from [kering-rs CI](https://github.com/hwchen/keyring-rs/blob/master/.github/workflows/ci.yaml) works without `dbus-x11` required.  
 
 The `keyringrs` is **not** plan as the alternative of [keyring](https://github.com/jaraco/keyring).
 For CLI tool and more generic use cases I recommend to go to `keyring`.
@@ -88,3 +89,5 @@ However, over the years, `keyring-rs` has gained more features, become more robu
 It would be beneficial to have a proper wrapper for it. 
 
 Additionally, `pyo3` has significantly improved, making it much easier to create wrappers and distribute the library on PyPI.
+
+There is also a python wrapper [python-linux-keyutils](https://github.com/thorgate/python-linux-keyutils) for `linux-keyutils` crate, which may provide more keyutils related APIs and error messages.
